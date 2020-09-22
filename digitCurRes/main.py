@@ -76,7 +76,7 @@ timepoint = get_strike_day(c0)
 
 for i in range(3):
     asdf = i
-    if (i == 2) | (i == 1):
+    if (i == 2) | (i == 0):
         pass
         # continue
 
@@ -93,63 +93,6 @@ for i in range(3):
     ret = ((_c0.close.shift(-ret_time) / (_c0.close)) - 1)
 
     factors = cal_factors(_y, _c0, _p0)
-    # fac0 = np.log(_y.close).diff(long_windows)
-    # fac1 = np.log(_y.close).diff(short_windows)
-    # fac2 = np.log(_y.close).diff(long_windows).rolling(long_windows).std()
-    # fac3 = np.log(_y.close).diff(short_windows).rolling(short_windows).std()
-    # fac4 = ((_y.high - _y.low) / (_y.close + _y.open)).rolling(long_windows).mean()
-    # fac5 = ((_y.high - _y.low) / (_y.close + _y.open)).rolling(short_windows).mean()
-    # fac6 = _y.vol.rolling(long_windows).sum()
-    # fac7 = _y.vol.rolling(short_windows).sum()
-
-    # fac8 = np.log(_c0.close).diff(long_windows)
-    # fac9 = np.log(_c0.close).diff(short_windows)
-    # fac10 = np.log(_c0.close).diff().rolling(long_windows).std()
-    # fac11 = np.log(_c0.close).diff().rolling(short_windows).std()
-    # fac12 = ((_c0.high - _c0.low) / (_c0.close + _c0.open)).rolling(long_windows).mean()
-    # fac13 = ((_c0.high - _c0.low) / (_c0.close + _c0.open)).rolling(short_windows).mean()
-    # fac14 = _c0.vol.rolling(long_windows).sum()
-    # fac15 = _c0.vol.rolling(short_windows).sum()
-
-    # fac16 = np.log(_p0.close).diff(long_windows)
-    # fac17 = np.log(_p0.close).diff(short_windows)
-    # fac18 = np.log(_p0.close).diff().rolling(long_windows).std()
-    # fac19 = np.log(_p0.close).diff().rolling(short_windows).std()
-    # fac20 = ((_p0.high - _p0.low) / (_p0.close + _p0.open)).rolling(long_windows).mean()
-    # fac21 = ((_p0.high - _p0.low) / (_p0.close + _p0.open)).rolling(short_windows).mean()
-    # fac22 = _p0.vol.rolling(long_windows).sum()
-    # fac23 = _p0.vol.rolling(short_windows).sum()
-
-    # fac24 = (_c0.vol - _p0.vol) / (_c0.vol+_p0.vol+1).rolling(long_windows).mean()
-    # fac25 = (_c0.close.diff()) / (_y.close.diff() + 0.0001).rolling(long_windows).mean()
-    # fac26 = (_p0.close.diff()) / (_y.close.diff() + 0.0001).rolling(long_windows).mean()
-
-    # fac27 = np.log(_y.close).diff(medium_windows)
-    # fac28 = np.log(_y.close).diff(medium_windows).rolling(medium_windows).std()
-    # fac29 = ((_y.high - _y.low) / (_y.close + _y.open)).rolling(medium_windows).mean()
-    # fac30 = np.log(_c0.close).diff(medium_windows)
-    # fac31 = np.log(_p0.close).diff(medium_windows)
-    # fac32 = (_c0.close.diff()) / (_y.close.diff() + 0.0001).rolling(short_windows).mean()
-    # fac33 = (_p0.close.diff()) / (_y.close.diff() + 0.0001).rolling(short_windows).mean()
-    # fac34 = (_c0.close.diff().diff()) / (_y.close.diff().diff() + 0.0001).rolling(short_windows).mean()
-    # fac35 = (_p0.close.diff().diff()) / (_y.close.diff().diff() + 0.0001).rolling(short_windows).mean()
-    # fac36 = (_c0.close.diff().diff()) / ((_y.close.diff().diff()).diff() + 0.0001)
-    # fac37 = (_p0.close.diff().diff()) / ((_y.close.diff().diff()).diff() + 0.0001)
-    # fac38 = _c0.close.diff()/(_y.close.rolling(medium_windows).std().diff() + 0.0001)
-    # fac39 = _p0.close.diff()/(_y.close.rolling(medium_windows).std().diff() + 0.0001)
-    # fac40 = fac38.rolling(medium_windows).mean()
-    # fac41 = fac39.rolling(medium_windows).mean()
-
-    #     for i in range(factors_num):
-    #         locals()['fac{}'.format(i)] = locals()['fac{}'.format(i)].rolling(10).apply(lambda x:((x-x.mean())/x.std()).iloc[-1])
-    # columns = ['fac{}'.format(i) for i in range(factors_num)]
-
-    # factors = []
-    # for _i in range(factors_num):
-    # factors.append(locals()['fac{}'.format(str(_i))])
-    # factors = pd.concat(factors,axis = 1)
-    # factors.columns = columns
-
     Y1 = f(np.nan_to_num(ret))
     Y2 = f(np.nan_to_num(ret))
     X1 = np.nan_to_num(factors.values)
@@ -203,6 +146,19 @@ for i in range(3):
 
     fig, ax = plt.subplots()
     net_worth = pd.DataFrame(np.array(net))
+    if ret_time == 1:
+        net_worth.index = _y.index[10000:10000 + len(net_worth)]
     ax.plot(net_worth.sum(axis=1), color=colors[4])
+    for i, j in enumerate(ax.get_xticklabels()):
+        if i % 7200 == 0:
+            j.set_visible(True)
+            j.set_rotation(10)
+        else:
+            j.set_visible(False)
+    for i, j in enumerate(ax.get_xticklines()):
+        if i % 7200 == 0:
+            j.set_visible(True)
+        else:
+            j.set_visible(False)
     fig.savefig('{}.png'.format(asdf))
     plt.show(fig)
